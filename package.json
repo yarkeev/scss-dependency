@@ -1,0 +1,31 @@
+{
+  "name": "scss-dependency",
+  "version": "0.0.0",
+  "description": "get list dependency of scss/sass file",
+  "main": "main.js",
+  "dependencies": {
+    "when": "~3.0.1",
+    "underscore": "~1.6.0"
+  },
+  "devDependencies": {
+    "underscore": "^1.6.0",
+    "when": "^3.0.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/yarkeev/scss-dependency.git"
+  },
+  "keywords": [
+    "scss",
+    "dependency"
+  ],
+  "author": "Yarkeev Denis <denis.yarkeev@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yarkeev/scss-dependency/issues"
+  },
+  "homepage": "https://github.com/yarkeev/scss-dependency"
+}
