@@ -56,10 +56,6 @@ class ScssFile
 				@options.callback? @deps
 
 
-
-file = new ScssFile '../my.mail.ru/data/ru/css/sass/main.scss',
-	callback: (list) ->
-		console.log(list)
-
-module.exports = ->
-
+module.exports = (file, callback) ->
+	new ScssFile file,
+	callback: callback
