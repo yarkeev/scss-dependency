@@ -1,4 +1,4 @@
-Fet list dependency of scss/sass file
+Get list dependency of scss/sass file
 
 ## Example:
 ```
