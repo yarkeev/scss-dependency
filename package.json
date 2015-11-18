@@ -1,6 +1,6 @@
 {
   "name": "scss-dependency",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "get list dependency of scss/sass file",
   "main": "main.js",
   "dependencies": {

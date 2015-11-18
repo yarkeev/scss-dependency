@@ -9,7 +9,8 @@ class ScssFile
 
 	constructor: (pathToFile, options) ->
 		@options = _.extend
-			encoding: 'utf-8'
+			encoding: 'utf-8',
+			baseDir: null
 		,options
 		dir = path.dirname pathToFile
 		@deps = []
@@ -19,7 +20,6 @@ class ScssFile
 			@options.callback?()
 			return
 
-		# console.log pathToFile
 		fs.readFile pathToFile, @options.encoding, (err, content) =>
 			if err || !content
 				console.log err
@@ -42,6 +42,14 @@ class ScssFile
 					fullPath = "#{fullPath}.scss"
 				else if fs.existsSync "#{fullPath}.sass"
 					fullPath = "#{fullPath}.sass"
+				else if @options.baseDir
+					fullPath = path.resolve @options.baseDir, relativePath
+					if fs.existsSync "#{fullPath}.scss"
+						fullPath = "#{fullPath}.scss"
+					else if fs.existsSync "#{fullPath}.sass"
+						fullPath = "#{fullPath}.sass"
+					else
+						return
 				else
 					return
 
@@ -56,6 +64,11 @@ class ScssFile
 				@options.callback? @deps
 
 
-module.exports = (file, callback) ->
-	new ScssFile file,
-	callback: callback
+module.exports = (file, options, callback) ->
+	if _.isFunction options
+		callback = options
+		options = {}
+
+	new ScssFile file, _.extend(options, {
+		callback: callback
+	})
