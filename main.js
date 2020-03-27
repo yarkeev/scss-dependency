@@ -46,13 +46,21 @@
             return;
           }
           imports.forEach(function(importStr) {
-            var arRelative, dfd, fullPath, relativePath;
+            var arRelative, dfd, fileExt, fileName, fileNameFromImport, filePathFromImport, fullPath, fullPathWrong, isWrongFileName, relativePath, relativePathWrong, shouldCheckForWrongName;
             dfd = Deferred.defer();
-            relativePath = importStr.replace(/@import\s*/ig, '').replace(/"/g, '');
-            arRelative = relativePath.split('/');
-            arRelative[arRelative.length - 1] = "_" + arRelative[arRelative.length - 1];
-            relativePath = arRelative.join('/');
+            filePathFromImport = importStr.replace(/@import\s*/ig, '').replace(/"/g, '');
+            fileNameFromImport = filePathFromImport.split("/");
+            fileNameFromImport = fileNameFromImport[fileNameFromImport.length - 1];
+            relativePath = filePathFromImport;
+            if (fileNameFromImport.charAt(0) !== '_') {
+              arRelative = relativePath.split('/');
+              arRelative[arRelative.length - 1] = "_" + arRelative[arRelative.length - 1];
+              relativePath = arRelative.join('/');
+            }
+            relativePathWrong = filePathFromImport;
             fullPath = path.resolve(dir, relativePath);
+            fullPathWrong = path.resolve(dir, relativePathWrong);
+            shouldCheckForWrongName = false;
             if (fs.existsSync(fullPath + ".scss")) {
               fullPath = fullPath + ".scss";
             } else if (fs.existsSync(fullPath + ".sass")) {
@@ -64,9 +72,30 @@
               } else if (fs.existsSync(fullPath + ".sass")) {
                 fullPath = fullPath + ".sass";
               } else {
-                return;
+                shouldCheckForWrongName = true;
               }
             } else {
+              shouldCheckForWrongName = true;
+            }
+            if (shouldCheckForWrongName) {
+              isWrongFileName = false;
+              fileName = fileNameFromImport;
+              fileExt = void 0;
+              if (_this.options.baseDir) {
+                fullPathWrong = path.resolve(_this.options.baseDir, relativePathWrong);
+              }
+              if (fs.existsSync(fullPathWrong + ".scss")) {
+                isWrongFileName = true;
+                fileExt = "scss";
+              }
+              if (fs.existsSync(fullPathWrong + ".sass")) {
+                isWrongFileName = true;
+                fileExt = "sass";
+              }
+              if (isWrongFileName) {
+                fileName += "." + fileExt;
+                console.log("\x1b[31m", "[scss-dependency] rename file " + fileName + " to _" + fileName + " (full path: " + fullPathWrong + ")");
+              }
               return;
             }
             _this.deps.push(fullPath);
@@ -104,5 +133,3 @@
   };
 
 }).call(this);
-
-//# sourceMappingURL=main.js.map

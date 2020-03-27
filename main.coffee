@@ -33,11 +33,18 @@ class ScssFile
 
 			imports.forEach (importStr) =>
 				dfd = Deferred.defer()
-				relativePath = importStr.replace(/@import\s*/ig, '').replace(/"/g, '')
-				arRelative = relativePath.split '/'
-				arRelative[arRelative.length - 1] = "_#{arRelative[arRelative.length - 1]}"
-				relativePath = arRelative.join '/'
+				filePathFromImport = importStr.replace(/@import\s*/ig, '').replace(/"/g, '')
+				fileNameFromImport = filePathFromImport.split("/")
+				fileNameFromImport = fileNameFromImport[fileNameFromImport.length - 1]
+				relativePath = filePathFromImport
+				if fileNameFromImport.charAt(0) != '_'
+					arRelative = relativePath.split '/'
+					arRelative[arRelative.length - 1] = "_#{arRelative[arRelative.length - 1]}"
+					relativePath = arRelative.join '/'
+				relativePathWrong = filePathFromImport
 				fullPath = path.resolve dir, relativePath
+				fullPathWrong = path.resolve dir, relativePathWrong
+				shouldCheckForWrongName = false
 				if fs.existsSync "#{fullPath}.scss"
 					fullPath = "#{fullPath}.scss"
 				else if fs.existsSync "#{fullPath}.sass"
@@ -49,8 +56,25 @@ class ScssFile
 					else if fs.existsSync "#{fullPath}.sass"
 						fullPath = "#{fullPath}.sass"
 					else
-						return
+						shouldCheckForWrongName = true
 				else
+					shouldCheckForWrongName = true
+
+				if shouldCheckForWrongName
+					isWrongFileName = false
+					fileName = fileNameFromImport
+					fileExt = undefined
+					if @options.baseDir
+						fullPathWrong = path.resolve @options.baseDir, relativePathWrong
+					if fs.existsSync "#{fullPathWrong}.scss"
+						isWrongFileName = true
+						fileExt = "scss"
+					if fs.existsSync "#{fullPathWrong}.sass"
+						isWrongFileName = true
+						fileExt = "sass"
+					if isWrongFileName
+						fileName += ".#{fileExt}"
+						console.log "\x1b[31m", "[scss-dependency] rename file #{fileName} to _#{fileName} (full path: #{fullPathWrong})"
 					return
 
 				@deps.push fullPath
