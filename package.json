@@ -1,31 +1,34 @@
 {
-  "name": "scss-dependency",
-  "version": "1.0.0",
-  "description": "get list dependency of scss/sass file",
-  "main": "main.js",
-  "dependencies": {
-    "when": "~3.0.1",
-    "underscore": "~1.6.0"
-  },
-  "devDependencies": {
-    "underscore": "^1.6.0",
-    "when": "^3.0.1"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/yarkeev/scss-dependency.git"
-  },
-  "keywords": [
-    "scss",
-    "dependency"
-  ],
-  "author": "Yarkeev Denis <denis.yarkeev@gmail.com>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/yarkeev/scss-dependency/issues"
-  },
-  "homepage": "https://github.com/yarkeev/scss-dependency"
+	"name": "scss-dependency",
+	"version": "1.1.0",
+	"description": "get list dependency of scss/sass file",
+	"main": "dist/index.js",
+	"dependencies": {
+		"when": "~3.0.1",
+		"underscore": "~1.6.0"
+	},
+	"devDependencies": {
+		"coffee": "^5.2.2",
+		"version-bump-prompt": "^6.0.3"
+	},
+	"scripts": {
+		"clean": "rm -rf ./dist",
+		"coffee": "coffee -bc --output ./dist ./src",
+		"build": "npm run clean && npm run coffee",
+		"prepublish": "npm run build && bump"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/yarkeev/scss-dependency.git"
+	},
+	"keywords": [
+		"scss",
+		"dependency"
+	],
+	"author": "Yarkeev Denis <denis.yarkeev@gmail.com>",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/yarkeev/scss-dependency/issues"
+	},
+	"homepage": "https://github.com/yarkeev/scss-dependency"
 }
