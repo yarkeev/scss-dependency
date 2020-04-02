@@ -45,6 +45,7 @@ class ScssFile
 				fullPath = path.resolve dir, relativePath
 				fullPathWrong = path.resolve dir, relativePathWrong
 				shouldCheckForWrongName = false
+				shouldReturn = false
 				if fs.existsSync "#{fullPath}.scss"
 					fullPath = "#{fullPath}.scss"
 				else if fs.existsSync "#{fullPath}.sass"
@@ -73,9 +74,18 @@ class ScssFile
 						isWrongFileName = true
 						fileExt = "sass"
 					if isWrongFileName
+						fullPathWrong += ".#{fileExt}"
 						fileName += ".#{fileExt}"
-						console.log "\x1b[31m", "[scss-dependency] rename file #{fileName} to _#{fileName} (full path: #{fullPathWrong})"
-					return
+
+						wrongFileContents = fs.readFileSync(fullPathWrong)
+						disableWarningsRegExp = new RegExp("/\\*\\s*scss-dependency\\s+disable-filename-warning\\s*\\*/", "gm")
+						if not disableWarningsRegExp.test(wrongFileContents)
+							console.log "\x1b[31m", "[scss-dependency] rename file #{fileName} to _#{fileName} (full path: #{fullPathWrong})"
+							shouldReturn = true
+						else
+							fullPath = fullPathWrong
+
+				return if shouldReturn
 
 				@deps.push fullPath
 				new ScssFile fullPath, _.extend {}, @options,
